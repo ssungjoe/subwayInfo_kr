@@ -49,8 +49,7 @@
 						<td>
 							<span style="float:right">
 								<select id="id" name="id">
-									<option value="" selected disabled hidden>
-									<?php 
+									<option value="" selected disabled hidden> <?php 
 										function post($url, $data)
 										{
 											$curl = curl_init($url);
@@ -62,58 +61,42 @@
 											return $response;
 										}
 
-										$id=0;
+										$id = '0';
 										$json = '{"result":[]};';
 
-
+										// get json data from  api.php
 										if(isset($_POST["id"])) {
 											$id = (string)$_POST["id"];
 											$json = post(
-												"http://nestweb.dothome.co.kr/api.php", // api.php
-												array("id"=>$id)
+												"http://nestweb.dothome.co.kr/api.php",
+												array("id" => $id) //id data
 											).';';
 										}
 
+										// reveal line name in option tag
+										$list = array(
+											'1호선', '2호선', '3호선', '4호선', '5호선', '6호선', '7호선', '8호선', '9호선', 
+											'GTX-A', '경춘선', '경의중앙선', '공항철도', '수인분당선', '신분당', '우이신설', '신림선'
+										);
+
 										if($id != '') {
-											$name = array(
-												'0'=>'1호선', '1'=>'2호선', '2'=>'3호선', '3'=>'4호선', '4'=>'5호선', '5'=>'6호선',
-												'6'=>'7호선', '7'=>'8호선', '8'=>'9호선', '9'=>'GTX-A', '10'=>'경춘선', '11'=>'경의중앙선',
-												'12'=>'공항철도', '13'=>'수인분당선', '14'=>'신분당선', '15'=>'우이신설', '16'=>'신림선'
-											)[$id];
+											$name = $list[$id];
+											echo $name;
 										}
-										else {
-											$id = '0';
-											$name = '';
+										else echo '1호선';
+									?> </option>
+									<?php 
+										$option = ""; // list 기반 option tag 선택지 생성
+										$seperator = str_repeat("\t", 9); // purpose to beautify
+
+										for ($i = 0; $i < count($list); $i++) {
+											$option .= "<option value=\"".$i."\">".$list[$i]."</option>\n";
+											if($i == count($list) - 1) continue;
+											$option .= $seperator;
 										}
 
-										// option 태그에서 고른 값 표시
-										if(isset($_POST['id'])) {
-											echo array(
-												'1호선', '2호선', '3호선', '4호선', '5호선', '6호선', '7호선',
-												'8호선', '9호선', 'GTX-A', '경춘선', '경의중앙선', '공항철도', '수인분당선',
-												'신분당', '우이신설', '신림선'
-											)[(string)$_POST['id']];
-										} 
-										else echo '1호선';
+										echo $option;
 									?>
-									</option>
-									<option value="0">1호선</option>
-									<option value="1">2호선</option>
-									<option value="2">3호선</option>
-									<option value="3">4호선</option>
-									<option value="4">5호선</option>
-									<option value="5">6호선</option>
-									<option value="6">7호선</option>
-									<option value="7">8호선</option>
-									<option value="8">9호선</option>
-									<option value="9">GTX-A</option>
-									<option value="10">경춘선</option>
-									<option value="11">경의중앙선</option>
-									<option value="12">공항철도</option>
-									<option value="13">수인분당선</option>
-									<option value="14">신분당</option>
-									<option value="15">우이신설</option>
-									<option value="16">신림선</option>
 								</select>
 								<input type="submit">
 							</span>
