@@ -59,6 +59,8 @@
 		 */
 		for($i = 0; $i < count($result); $i++) {
 			$t = $result[$i];
+			if(str_contains($t->statnNm, "종착")) continue; // 2호선 성수종착 배제
+
 			$down = ''; $up = '';
 
 			if($t->existYn1 == "T") $down = "f";
@@ -103,12 +105,12 @@
 				}
 			}
 
-			$res[$i] = array(
+			array_push($res, array(
 				'name'=>($t->statnNm), // 역 이름
 				'exist_down'=>$down, // 아래방향 도착여부
 				'exist_up'=>$up, // 위방향 도착여부
 				'id'=>$id_, // 정류장 번호
-			);
+			));
 		}
 
 		if(implode('', $res) != '') echo json_encode(array('result'=>$res));

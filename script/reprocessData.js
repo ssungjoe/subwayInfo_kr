@@ -12,7 +12,7 @@ function filteringData(data) { // 겹치는 항목 필터링
 		if (seenNames.has(name)) { // 이미 있는 name이면
 			const existingItem = seenNames.get(name);
 
-			if (exist_down === 'e' || exist_up === 'e') { // e가 있으면 e인 데이터로 교체
+			if (exist_down === "e" || exist_up === "e") { // e가 있으면 e인 데이터로 교체
 				seenNames.set(name, item);
 			}
 		} else {
@@ -50,7 +50,7 @@ function addPointData(data, keyword) { // P(분기점)인 지점 추가
 
 	data.result.forEach(item => {
 		const value = item.id;
-		const idValue = parseInt(value.replace(keyword, ''));
+		const idValue = parseInt(value.replace(keyword, ""));
 
 		if (idValue == pIds[0]) {
 			let pData = {};
@@ -64,7 +64,25 @@ function addPointData(data, keyword) { // P(분기점)인 지점 추가
 	return { result };
 }
 
+function rearrangeBySubId(data) {
+	let result = data.result.sort((a, b) => {
+		const sepId = (id) => id.split("-").map(Number); // Id 구분
+
+		let [aMain, aSub] = sepId(a.id);
+		let [bMain, bSub] = sepId(b.id);
+
+		if (aMain !== bMain) {
+			return aMain - bMain;
+		}
+		return ~~aSub - ~~bSub; // ~~undefined (subId가 없음) -> 0
+	});
+
+	return { result };
+}
+
+
 json = filteringData(json); // 중복 삭제
+json = rearrangeBySubId(json); // subId가 있는 데이터들 위치 조정, ex) 234-1, 234-2
 
 const Pline = ["0", "4"]; // 1, 5호선
 

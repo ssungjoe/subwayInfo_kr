@@ -13,6 +13,8 @@ let row = document.createElement("table");
 row.className = 'chart';
 
 let tempName = "";
+let tempBool = false;
+
 json = json["result"];
 
 for (let x = 0; x < json.length; x++) { // 역 개수에 따른 유동적 표 생성, row 변수에 붙일 생각
@@ -31,10 +33,35 @@ for (let x = 0; x < json.length; x++) { // 역 개수에 따른 유동적 표 생성, row 변
 		name_.colSpan = 3;
 
 		cell.appendChild(name_);
-
 		row.appendChild(cell);
 
 		continue;
+	} else if (t.name.includes("지선")) {
+		tempBool = true;
+		tempName = t.name.slice(0, -2);
+
+		name_.innerHTML = t.name + " (" + tempName + " → " + json[x + 1].name + ")";
+		name_.style = "padding: 10px";
+		name_.colSpan = 3;
+
+		cell.appendChild(name_);
+		row.appendChild(cell);
+
+		continue;
+	}
+
+	if (tempBool && !t.id.includes("-")) {
+		let cell_2 = document.createElement("tr");
+		let name_2 = document.createElement("td"); 
+		name_2.innerHTML = t.name + " 방향 (" + tempName + " → " + t.name + ")";
+		name_2.style = "padding: 10px";
+		name_2.colSpan = 3;
+
+		cell_2.appendChild(name_2);
+		row.appendChild(cell_2);
+
+		tempBool = false;
+		tempName = "";
 	}
 
 	name_.innerHTML = t.name + '<br><small>' + t.id + '</small>';
