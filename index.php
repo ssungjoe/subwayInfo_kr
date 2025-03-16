@@ -17,62 +17,10 @@
             integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
             crossorigin="anonymous">
     </script>
-    <link rel="stylesheet" type="text/css" href="http://nestweb.dothome.co.kr/semantic/semantic.css">
-    <script src="http://nestweb.dothome.co.kr/semantic/semantic.js"></script>
-	<style>
-		table.chart {
-			margin: 0;
-            padding: 0;
-            border-collapse: collapse;
-		}
-		table.chart th, table.chart td {
-			margin: 0;
-            padding: 0;
-            border-collapse: collapse;
-			width: 100%;
-			text-align: center;
-		}
-		table.chart th:nth-child(3n-1), table.chart td:nth-child(3n-2) {
-            border-bottom: 1px solid #cccccc;
-        }
-        table.chart caption {
-            margin: 0;
-            padding: 0;
-            text-align: right;
-			border-collapse: collapse;
-        }
-		table.chart thead th {
-			background-color: #e9e9e9 !important;
-            border-bottom: 1px solid #999999;
-			border-collapse: collapse;
-        }
-		table.chart tfoot th {
-            background-color: #e2e2e2 !important;
-        }
-		input {
-			height: 2em;
-			width: 3.7em;
-			box-sizing: border-box;
-			border-radius: 7px;
-			border: none;
-			font-size: 1em;
-			font-family: "Montserrat", "Noto Sans KR", sans-serif;
-			background-color: #E7E7E7;
-			background-repeat: no-repeat;
-			background-position: 1em;
-			background-size: 7%;
-			outline: none;
-		}
-		img {
-			display: block;
-		}
-		div.fixedBottom {
-			position: fixed;
-			width: 100%;
-			bottom: 0;
-			left: 0;
-		}
-	</style>
+
+    <link rel="stylesheet" type="text/css" href="./style/semantic/semantic.css">
+    <script src="./style/semantic/semantic.js"></script>
+	<link rel="stylesheet" type="text/css" href="./style/smallDesign.css">
 </head>
 <body>
     <div class="ui black inverted vertical footer segment">
@@ -179,120 +127,13 @@
         <div class="one wide column"></div>
     </div>
     <script>
-
         <?php 
 			// option 태그 내 php 코드에서 받은 JSON을 js로 출력
-			echo "\n\t\tlet json = ".$json."\n\t\tlet line = [\"".$name."\",\"".$id."\"];\n";
+			echo "let json = ".$json."\n\n\t\tlet line = [\"".$name."\",\"".$id."\"];\n";
 		?>
-
-		function filteringData(data) { // 겹치는 항목 필터링
-			const result = [];
-			const seenNames = new Map();
-
-			data.result.forEach(item => {
-				const { name, exist_down, exist_up } = item;
-
-				if (seenNames.has(name)) { // 이미 있는 name이면
-					const existingItem = seenNames.get(name);
-
-					if (exist_down === 'e' || exist_up === 'e') { // e가 있으면 e인 데이터로 교체
-						seenNames.set(name, item);
-					} 
-				} else {
-					seenNames.set(name, item); // 새로운 name이면 추가
-				}
-			});
-
-			seenNames.forEach(item => result.push(item));
-			return { result };
-		}
-
-		json = filteringData(json); // 중복 삭제
-
-		const myURL = "http://nestweb.dothome.co.kr";
-		
-		json = json['result']; // 지하철 정보
-
-		document.querySelectorAll('option')[Number(line[1]) + 1].setAttribute('selected', 'selected');
-		let container = document.getElementById('container');
-		container.innerText = (line[0] != '') ? ('현재 노선 : ' + line[0]) : '';
-
-		var row = document.createElement("table");
-		row.className = 'chart';
-
-		for (let x = 0; x < json.length; x++) { // 역 개수에 따른 유동적 표 생성, row 변수에 붙일 생각
-			let cell = document.createElement("tr");
-			let name_ = document.createElement("td"); // 역 이름
-			let loc_1 = document.createElement("td"); // 아래쪽 라인
-			let loc_2 = document.createElement("td"); // 위쪽 라인
-			let t = json[x];
-
-			name_.innerHTML = t.name + '<br><small>' + t.id + '</small>';
-
-			// 아래쪽 라인
-			if(t.exist_down == 'f') { //역에 급행열차
-				let img = document.createElement('img');
-				img.setAttribute('src', myURL + '/asset/fast_down_'+line[1]+'.png');
-				img.style.width = "50px";
-				img.style.height = "50px";
-				loc_1.appendChild(img);
-			}
-			else if(t.exist_down == 'e'){ // 역에 일반열차
-				let img = document.createElement('img');
-				img.setAttribute('src', myURL + '/asset/exist_down_' + line[1] + '.png');
-				img.style.width = "50px";
-				img.style.height = "50px";
-				loc_1.appendChild(img);
-			}
-			else if(t.exist_down == 'n'){ //역에 열차 없을 때
-				let img = document.createElement('img');
-				img.setAttribute('src', myURL + '/asset/none_'+line[1]+'.png');
-				img.style.width = "50px";
-				img.style.height = "50px";
-				loc_1.appendChild(img);
-			}
-
-			// 위쪽 라인
-			if(t.exist_up == 'f') { //역에 급행열차
-				let img = document.createElement('img');
-				img.setAttribute('src', myURL + '/asset/fast_up_'+line[1]+'.png');
-				img.style.width = "50px";
-				img.style.height = "50px";
-				loc_2.appendChild(img);
-			}
-			else if(t.exist_up == 'e'){ // 역에 일반열차
-				let img = document.createElement('img');
-				img.setAttribute('src', myURL + '/asset/exist_up_'+line[1]+'.png');
-				img.style.width = "50px";
-				img.style.height = "50px";
-				loc_2.appendChild(img);
-			}
-			else if(t.exist_up == 'n'){ // 역에 열차 없을 때
-				let img = document.createElement('img');
-				img.setAttribute('src', myURL + '/asset/none_'+line[1]+'.png');
-				img.style.width = "50px";
-				img.style.height = "50px";
-				loc_2.appendChild(img);
-			}
-
-			cell.appendChild(name_);
-			cell.appendChild(loc_1);
-			cell.appendChild(loc_2);
-
-			row.appendChild(cell);	
-		}
-
-
-		container.appendChild(row);
-		container.appendChild(document.createElement("br"));
-
-
-		if(json.length == 0) {
-			let intro = document.createElement('div');
-			intro.innerText = '필요할 때마다 수동으로 새로고침 후 확인 바랍니다.';
-			container.appendChild(intro);
-		}
     </script>
+	<script src="./script/reprocessData.js" charset='euc-kr'></script>
+	<script src="./script/makeChart.js" charset='euc-kr'></script>
     
 	<br>
 
